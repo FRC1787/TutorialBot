@@ -51,7 +51,7 @@ public class Drivetrain extends SubsystemBase {
   
   
   //navX
-  public AHRS gyro;
+  public static AHRS gyro;
   //public DifferentialDriveKinematics kDriveKinematics;// = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
   public DifferentialDriveOdometry odometry;// = new DifferentialDriveOdometry(gyro.getRotation2d());
 
@@ -157,7 +157,7 @@ public class Drivetrain extends SubsystemBase {
     gyro.reset();
   }
 
-  public double getHeading() {
+  public static double getHeading() {
     return gyro.getRotation2d().getDegrees();
 
     //this one might actually be right who knows
