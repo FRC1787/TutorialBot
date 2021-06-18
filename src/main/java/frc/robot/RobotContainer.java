@@ -102,7 +102,7 @@ public class RobotContainer {
 
   RamseteCommand ramseteCommand = new RamseteCommand(
       exampleTrajectory,
-      drivetrain::getPose,
+      Drivetrain::getPose,
       new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
       new SimpleMotorFeedforward(Constants.ksVolts,
                                   Constants.kvVoltSecondsPerMeter,

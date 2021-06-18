@@ -35,7 +35,7 @@ public final class Constants {
     public static final double ksVolts = 0.113;//0.0418;
     public static final double kvVoltSecondsPerMeter = 2.67;//2.87;
     public static final double kaVoltSecondsSquaredPerMeter = 0.38;//0.175;
-    public static final double kPDriveVel = 1.87*0.1;//1.87*1.5
+    public static final double kPDriveVel = 1.87;//1.87*1.5
     public static final double kTrackwidthMeters = 0.552865;
     //0.025 most likely lower bound
     //0.01 did not work
@@ -47,7 +47,7 @@ public final class Constants {
     //encoders
 	public static final int[] kLeftEncoderPorts = new int[] {0, 1}; //MAKE 6 ENCODERS
 	public static final int[] kRightEncoderPorts = new int[] {2, 3};
-	public static final int kEncoderDistancePerPulse = 1024; //maybe 4096
+	public static final double kEncoderDistancePerPulse = 1/42*0.1524*Math.PI;//1024; //maybe 4096
 	public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     
     /*

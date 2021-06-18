@@ -38,12 +38,12 @@ public class Drivetrain extends SubsystemBase {
   public static CANSparkMax rightSpark2 = null;
   public static CANSparkMax rightSpark3 = null;*/
 
-  public static SpeedController leftSpark1 = null;
-  public static SpeedController leftSpark2 = null;
-  public static SpeedController leftSpark3 = null;
-  public static SpeedController rightSpark1 = null;
-  public static SpeedController rightSpark2 = null;
-  public static SpeedController rightSpark3 = null;
+  public static CANSparkMax leftSpark1 = null;
+  public static CANSparkMax leftSpark2 = null;
+  public static CANSparkMax leftSpark3 = null;
+  public static CANSparkMax rightSpark1 = null;
+  public static CANSparkMax rightSpark2 = null;
+  public static CANSparkMax rightSpark3 = null;
   private CANEncoder leftEncoder = null;
   private CANEncoder rightEncoder = null;
   //encoders
@@ -53,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
   //navX
   public static AHRS gyro;
   //public DifferentialDriveKinematics kDriveKinematics;// = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
-  public DifferentialDriveOdometry odometry;// = new DifferentialDriveOdometry(gyro.getRotation2d());
+  public static DifferentialDriveOdometry odometry;// = new DifferentialDriveOdometry(gyro.getRotation2d());
 
   //motor groups + drive
   private SpeedControllerGroup leftMotors;
@@ -71,12 +71,13 @@ public class Drivetrain extends SubsystemBase {
     rightSpark2 = new CANSparkMax(Constants.right2, MotorType.kBrushless);
     rightSpark3 = new CANSparkMax(Constants.right3, MotorType.kBrushless);
 
-    leftEncoder = ((CANSparkMax) leftSpark1).getEncoder();
+    leftEncoder = leftSpark1.getEncoder(EncoderType.kHallSensor, 42);
       //private final Encoder rightEncoder = new Encoder(Constants.kRightEncoderPorts[0], Constants.kRightEncoderPorts[1]);
-    rightEncoder = ((CANSparkMax) rightSpark1).getEncoder();
+    rightEncoder = rightSpark1.getEncoder(EncoderType.kHallSensor, 42);
 
     leftMotors = new SpeedControllerGroup(leftSpark1, leftSpark2, leftSpark3);
     rightMotors = new SpeedControllerGroup(rightSpark1, rightSpark2, rightSpark3);
+    resetEncoders(); //originally at the end of this method
     drive = new DifferentialDrive(leftMotors, rightMotors);
     // Sets the distance per pulse for the encoders
     //leftEncoder.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
@@ -97,11 +98,9 @@ public class Drivetrain extends SubsystemBase {
     catch(Exception e) {
       System.out.println("error");
     }*/
-
-    resetEncoders();
   }
-
-  public Pose2d getPose() {
+    
+  public static Pose2d getPose() {
     return odometry.getPoseMeters();
   }
 
@@ -125,7 +124,7 @@ public class Drivetrain extends SubsystemBase {
     //does this matter if we are arcade
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     leftMotors.setVoltage(leftVolts);
-    rightMotors.setVoltage(-rightVolts);
+    rightMotors.setVoltage(-rightVolts); //originally only this was negative
     drive.feed();
   }
 
@@ -172,5 +171,9 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     //odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getDistance());
     odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+  }
+
+  public double encoderDistance(CANEncoder e) {
+    return e.getPosition()*Constants.kEncoderDistancePerPulse;
   }
 }

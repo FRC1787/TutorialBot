@@ -98,6 +98,17 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   public void setDashboard() {
+    SmartDashboard.putNumber("gyro angle", Drivetrain.getHeading());
+    SmartDashboard.putString("funny number", Drivetrain.getPose().toString());
+    /*
     SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
+    SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
+    SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
+    SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
+    SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
+    SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
+    SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
+    SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
+    SmartDashboard.putNumber("funny number", Drivetrain.getHeading());*/
   }
 }
