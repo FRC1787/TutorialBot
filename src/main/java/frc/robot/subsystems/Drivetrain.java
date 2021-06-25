@@ -109,7 +109,7 @@ public class Drivetrain extends SubsystemBase {
     drive.arcadeDrive(linearSpeed, angularSpeed);
   }
 
-    //does this matter if we are arcade
+  //does this matter if we are arcade
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     leftMotors.setVoltage(leftVolts);
     rightMotors.setVoltage(-rightVolts); //originally only this was negative
@@ -132,11 +132,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double leftDriveSpeed() {
-    return (leftEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 10.38;
+    return (leftEncoder.getVelocity() / 60) * (0.1524 * Math.PI) * 10.38;
   }
 
   public double rightDriveSpeed() {
-    return (rightEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 10.38;
+    return (rightEncoder.getVelocity() / 60) * (0.1524 * Math.PI) * 10.38;
   }
 
   public double getAverageEncoderDistance() {
