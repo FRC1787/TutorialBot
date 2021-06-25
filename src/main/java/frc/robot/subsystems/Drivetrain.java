@@ -83,6 +83,9 @@ public class Drivetrain extends SubsystemBase {
     gyro = new AHRS();
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 
+    setMaxOutput(0.3); //maybe go slow ~(=^･･^)_旦~ (ﾟoﾟ;)
+    
+
   }
     
   public static Pose2d getPose() {
@@ -165,7 +168,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getTurnRate() {
-    return -gyro.getRate();
+    return gyro.getRate(); //used to be negative
   }
 
   @Override
