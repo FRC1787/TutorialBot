@@ -116,19 +116,19 @@ public class Drivetrain extends SubsystemBase {
 
 
   public double leftEncoderDistance() {
-    return leftEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 83;
+    return leftEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 10.38;
   }
 
   public double rightEncoderDistance() {
-    return -rightEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 83;
+    return -rightEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 10.38;
   }
 
   public double leftDriveSpeed() {
-    return (leftEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 83;
+    return (leftEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 10.38;
   }
 
   public double rightDriveSpeed() {
-    return -(rightEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 83;
+    return -(rightEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 10.38;
   }
 
   public double getAverageEncoderDistance() {
