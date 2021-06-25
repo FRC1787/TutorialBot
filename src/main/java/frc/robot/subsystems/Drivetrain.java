@@ -174,7 +174,4 @@ public class Drivetrain extends SubsystemBase {
     odometry.update(gyro.getRotation2d(), leftDriveSpeed(), rightDriveSpeed());
   }
 
-  public double encoderDistance(CANEncoder e) {
-    return e.getPosition()*Constants.kEncoderDistancePerPulse;
-  }
 }
