@@ -128,12 +128,20 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double rightDriveSpeed() {
-    return (rightEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 83;
+    return -(rightEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 83;
   }
 
   public double getAverageEncoderDistance() {
     //return (leftEncoder.getPosition() + rightEncoder.getDistance()) / 2.0;
     return (leftEncoderDistance() + rightEncoderDistance()) / 2.0;
+  }
+
+  public CANEncoder getLeftEncoder() {
+    return leftEncoder;
+  }
+
+  public CANEncoder getRightEncoder() {
+    return rightEncoder;
   }
 
   public void setMaxOutput(double maxOutput) {
