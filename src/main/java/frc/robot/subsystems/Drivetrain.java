@@ -64,7 +64,7 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     
     leftEncoder = ((CANSparkMax) leftSpark1).getEncoder();
-      //private final Encoder rightEncoder = new Encoder(Constants.kRightEncoderPorts[0], Constants.kRightEncoderPorts[1]);
+    //private final Encoder rightEncoder = new Encoder(Constants.kRightEncoderPorts[0], Constants.kRightEncoderPorts[1]);
     rightEncoder = ((CANSparkMax) rightSpark1).getEncoder();
 
     leftMotors = new SpeedControllerGroup(leftSpark1, leftSpark2, leftSpark3);
