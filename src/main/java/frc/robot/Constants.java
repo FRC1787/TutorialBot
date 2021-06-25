@@ -45,7 +45,7 @@ public final class Constants {
     //encoders
 	public static final int[] kLeftEncoderPorts = new int[] {0, 1}; //MAKE 6 ENCODERS
 	public static final int[] kRightEncoderPorts = new int[] {2, 3};
-	public static final int kEncoderDistancePerPulse = 1024; //maybe 4096
+	public static final double kEncoderDistancePerPulse = (0.1524 * Math.PI) / 42 * 83; //most definitely not 4096 or 1024
 	public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     
     /*

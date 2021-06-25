@@ -28,30 +28,29 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
   
-  //spark motor controllers
+  //spark max motor controllers
   /*
   public static CANSparkMax leftSpark1 = null;
-  
   public static CANSparkMax leftSpark2 = null;
   public static CANSparkMax leftSpark3 = null;
   public static CANSparkMax rightSpark1 = null;
   public static CANSparkMax rightSpark2 = null;
   public static CANSparkMax rightSpark3 = null;*/
 
-  public static SpeedController leftSpark1 = null;
-  public static SpeedController leftSpark2 = null;
-  public static SpeedController leftSpark3 = null;
-  public static SpeedController rightSpark1 = null;
-  public static SpeedController rightSpark2 = null;
-  public static SpeedController rightSpark3 = null;
+  public static SpeedController leftSpark1 = new CANSparkMax(Constants.left1, MotorType.kBrushless);
+  public static SpeedController leftSpark2 = new CANSparkMax(Constants.left2, MotorType.kBrushless);
+  public static SpeedController leftSpark3 = new CANSparkMax(Constants.left3, MotorType.kBrushless);
+  public static SpeedController rightSpark1 = new CANSparkMax(Constants.right1, MotorType.kBrushless);
+  public static SpeedController rightSpark2 = new CANSparkMax(Constants.right2, MotorType.kBrushless);
+  public static SpeedController rightSpark3 = new CANSparkMax(Constants.right3, MotorType.kBrushless);
+
+  //encoders
   private CANEncoder leftEncoder = null;
   private CANEncoder rightEncoder = null;
-  //encoders
-  
   
   
   //navX
-  public AHRS gyro;
+  public AHRS gyro = new AHRS();;
   //public DifferentialDriveKinematics kDriveKinematics;// = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
   public DifferentialDriveOdometry odometry;// = new DifferentialDriveOdometry(gyro.getRotation2d());
 
@@ -63,14 +62,7 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-    //define sparks
-    leftSpark1 = new CANSparkMax(Constants.left1, MotorType.kBrushless);
-    leftSpark2 = new CANSparkMax(Constants.left2, MotorType.kBrushless);
-    leftSpark3 = new CANSparkMax(Constants.left3, MotorType.kBrushless);
-    rightSpark1 = new CANSparkMax(Constants.right1, MotorType.kBrushless);
-    rightSpark2 = new CANSparkMax(Constants.right2, MotorType.kBrushless);
-    rightSpark3 = new CANSparkMax(Constants.right3, MotorType.kBrushless);
-
+    
     leftEncoder = ((CANSparkMax) leftSpark1).getEncoder();
       //private final Encoder rightEncoder = new Encoder(Constants.kRightEncoderPorts[0], Constants.kRightEncoderPorts[1]);
     rightEncoder = ((CANSparkMax) rightSpark1).getEncoder();
@@ -79,24 +71,13 @@ public class Drivetrain extends SubsystemBase {
     rightMotors = new SpeedControllerGroup(rightSpark1, rightSpark2, rightSpark3);
     drive = new DifferentialDrive(leftMotors, rightMotors);
     // Sets the distance per pulse for the encoders
+
+
     //leftEncoder.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
-    leftEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
     //rightEncoder.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
-    rightEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
 
     //kDriveKinematics = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
-    gyro = new AHRS();
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
-
-    
-    /*try {
-      leftEncoder = leftSpark1.getEncoder();
-      //private final Encoder rightEncoder = new Encoder(Constants.kRightEncoderPorts[0], Constants.kRightEncoderPorts[1]);
-      rightEncoder = rightSpark1.getEncoder();
-    }
-    catch(Exception e) {
-      System.out.println("error");
-    }*/
 
     resetEncoders();
   }
@@ -105,12 +86,9 @@ public class Drivetrain extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() { // this averaging is probably bad
-    /*
-    leftSpeed = (leftSpark1.getEncoder().getVelocity() + leftSpark2.getEncoder().getVelocity() + leftSpark3.getEncoder().getVelocity()) / 3.0 * Constants.ENCODER_RPM_TO_MPS;
-    rightSpeed = (rightSpark1.getEncoder().getVelocity() + rightSpark2.getEncoder().getVelocity() + rightSpark3.getEncoder().getVelocity()) / 3.0 * Constants.ENCODER_RPM_TO_MPS;*/
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     //return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getRate());
-    return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity());
+    return new DifferentialDriveWheelSpeeds(leftDriveSpeed(), rightDriveSpeed());
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -136,17 +114,26 @@ public class Drivetrain extends SubsystemBase {
     rightEncoder.setPosition(0);
   }
 
+
+  public double leftEncoderDistance() {
+    return leftEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 83;
+  }
+
+  public double rightEncoderDistance() {
+    return -rightEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 83;
+  }
+
+  public double leftDriveSpeed() {
+    return (leftEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 83;
+  }
+
+  public double rightDriveSpeed() {
+    return (rightEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 83;
+  }
+
   public double getAverageEncoderDistance() {
     //return (leftEncoder.getPosition() + rightEncoder.getDistance()) / 2.0;
-    return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2.0;
-  }
-
-  public CANEncoder getLeftEncoder() {
-    return leftEncoder;
-  }
-
-  public CANEncoder getRightEncoder() {
-    return rightEncoder;
+    return (leftEncoderDistance() + rightEncoderDistance()) / 2.0;
   }
 
   public void setMaxOutput(double maxOutput) {
@@ -171,6 +158,6 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     //odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getDistance());
-    odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+    odometry.update(gyro.getRotation2d(), leftEncoderDistance(), rightEncoderDistance());
   }
 }
