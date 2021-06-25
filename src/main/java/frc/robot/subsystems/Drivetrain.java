@@ -44,10 +44,10 @@ public class Drivetrain extends SubsystemBase {
   public static CANSparkMax rightSpark1 = null;
   public static CANSparkMax rightSpark2 = null;
   public static CANSparkMax rightSpark3 = null;
+
+  //encoders
   private CANEncoder leftEncoder = null;
   private CANEncoder rightEncoder = null;
-  //encoders
-  
   
   
   //navX
@@ -72,32 +72,17 @@ public class Drivetrain extends SubsystemBase {
     rightSpark3 = new CANSparkMax(Constants.right3, MotorType.kBrushless);
 
     leftEncoder = leftSpark1.getEncoder(EncoderType.kHallSensor, 42);
-      //private final Encoder rightEncoder = new Encoder(Constants.kRightEncoderPorts[0], Constants.kRightEncoderPorts[1]);
     rightEncoder = rightSpark1.getEncoder(EncoderType.kHallSensor, 42);
 
     leftMotors = new SpeedControllerGroup(leftSpark1, leftSpark2, leftSpark3);
     rightMotors = new SpeedControllerGroup(rightSpark1, rightSpark2, rightSpark3);
     resetEncoders(); //originally at the end of this method
     drive = new DifferentialDrive(leftMotors, rightMotors);
-    // Sets the distance per pulse for the encoders
-    //leftEncoder.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
-    leftEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
-    //rightEncoder.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
-    rightEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
 
     //kDriveKinematics = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
     gyro = new AHRS();
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 
-    
-    /*try {
-      leftEncoder = leftSpark1.getEncoder();
-      //private final Encoder rightEncoder = new Encoder(Constants.kRightEncoderPorts[0], Constants.kRightEncoderPorts[1]);
-      rightEncoder = rightSpark1.getEncoder();
-    }
-    catch(Exception e) {
-      System.out.println("error");
-    }*/
   }
     
   public static Pose2d getPose() {
@@ -135,9 +120,25 @@ public class Drivetrain extends SubsystemBase {
     rightEncoder.setPosition(0);
   }
 
+  public double leftEncoderDistance() {
+    return leftEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 10.38;
+  }
+
+  public double rightEncoderDistance() {
+    return -rightEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 10.38;
+  }
+
+  public double leftDriveSpeed() {
+    return (leftEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 10.38;
+  }
+
+  public double rightDriveSpeed() {
+    return (rightEncoder.getVelocity() / 60) * 42 * (0.1524 * Math.PI) / 42 * 10.38;
+  }
+
   public double getAverageEncoderDistance() {
     //return (leftEncoder.getPosition() + rightEncoder.getDistance()) / 2.0;
-    return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2.0;
+    return (leftEncoderDistance() + rightEncoderDistance()) / 2.0;
   }
 
   public CANEncoder getLeftEncoder() {
@@ -170,7 +171,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     //odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getDistance());
-    odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+    odometry.update(gyro.getRotation2d(), leftDriveSpeed(), rightDriveSpeed());
   }
 
   public double encoderDistance(CANEncoder e) {
