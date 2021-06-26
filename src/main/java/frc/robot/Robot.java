@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
 
   public void setDashboard() {
     SmartDashboard.putNumber("gyro angle", Drivetrain.getHeading());
-    SmartDashboard.putString("funny number", Drivetrain.getPose().toString());
+    //SmartDashboard.putString("funny number", RobotContainer.drivetrain.getPose().toString());
     /*
     SmartDashboard.putNumber("funny number", Drivetrain.getHeading());
     SmartDashboard.putNumber("funny number", Drivetrain.getHeading());

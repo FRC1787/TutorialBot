@@ -88,16 +88,13 @@ public class Drivetrain extends SubsystemBase {
 
   }
     
-  public static Pose2d getPose() {
+  public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
 
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() { // this averaging is probably bad
-    /*
-    leftSpeed = (leftSpark1.getEncoder().getVelocity() + leftSpark2.getEncoder().getVelocity() + leftSpark3.getEncoder().getVelocity()) / 3.0 * Constants.ENCODER_RPM_TO_MPS;
-    rightSpeed = (rightSpark1.getEncoder().getVelocity() + rightSpark2.getEncoder().getVelocity() + rightSpark3.getEncoder().getVelocity()) / 3.0 * Constants.ENCODER_RPM_TO_MPS;*/
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     //return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getRate());
-    return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity());
+    return new DifferentialDriveWheelSpeeds(leftDriveSpeed(), rightDriveSpeed());
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -136,7 +133,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double rightDriveSpeed() {
-    return (rightEncoder.getVelocity() / 60) * (0.1524 * Math.PI) * 10.38;
+    return -(rightEncoder.getVelocity() / 60) * (0.1524 * Math.PI) * 10.38;
   }
 
   public double getAverageEncoderDistance() {

@@ -37,11 +37,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public static Drivetrain drivetrain;
+  public final Drivetrain driveTrain = new Drivetrain();
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private final Command m_autoCommand = new AutonomousCommand(drivetrain);
+  private final Command m_autoCommand = new AutonomousCommand(driveTrain);
 
   public static Joystick driverController = new Joystick(Constants.DRIVER_CONTROLLER);
   
@@ -51,9 +51,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    drivetrain = new Drivetrain();
-
-    drivetrain.setDefaultCommand(new DriveArcade());
+    driveTrain.setDefaultCommand(new DriveArcade(driveTrain));
   }
 
   /**
@@ -102,25 +100,26 @@ public class RobotContainer {
 
     RamseteCommand ramseteCommand = new RamseteCommand(
         exampleTrajectory,
-        Drivetrain::getPose,
+        driveTrain::getPose,
         new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
-        new SimpleMotorFeedforward(Constants.ksVolts,
-                                    Constants.kvVoltSecondsPerMeter,
-                                    Constants.kaVoltSecondsSquaredPerMeter),
+        new SimpleMotorFeedforward(
+          Constants.ksVolts,
+          Constants.kvVoltSecondsPerMeter,
+          Constants.kaVoltSecondsSquaredPerMeter),
         Constants.kDriveKinematics,
-        drivetrain::getWheelSpeeds,
+        driveTrain::getWheelSpeeds,
         new PIDController(Constants.kPDriveVel, 0, 0),
         new PIDController(Constants.kPDriveVel, 0, 0),
         // RamseteCommand passes volts to the callback
-        drivetrain::tankDriveVolts,
-        drivetrain
+        driveTrain::tankDriveVolts,
+        driveTrain
     );
 
 
     // Reset odometry to the starting pose of the trajectory.
-    drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+    driveTrain.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
+    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
   }
 }

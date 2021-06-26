@@ -5,15 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Drivetrain;
 
 public class DriveArcade extends CommandBase {
   /** Creates a new DriveArcade. */
-  public DriveArcade() {
+
+  Drivetrain localDriveTrain;
+
+  public DriveArcade(Drivetrain subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.drivetrain);
+    addRequirements(subsystem);
+    localDriveTrain = subsystem;
   }
 
   // Called when the command is initially scheduled.
@@ -26,7 +32,7 @@ public class DriveArcade extends CommandBase {
     
     double linearSpeed = RobotContainer.driverController.getRawAxis(Constants.DRIVER_CONTROLLER_LINEAR_AXIS);
     double angularSpeed = -RobotContainer.driverController.getRawAxis(Constants.DRIVER_CONTROLLER_ANGULAR_AXIS);
-    RobotContainer.drivetrain.arcadeDrive(linearSpeed, angularSpeed);
+    localDriveTrain.arcadeDrive(linearSpeed, angularSpeed);
 
 
   }
@@ -34,7 +40,7 @@ public class DriveArcade extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.drivetrain.arcadeDrive(0, 0);
+    localDriveTrain.arcadeDrive(0, 0);
   }
 
   // Returns true when the command should end.
