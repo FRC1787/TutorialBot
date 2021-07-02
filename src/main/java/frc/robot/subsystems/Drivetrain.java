@@ -46,8 +46,8 @@ public class Drivetrain extends SubsystemBase {
   public static CANSparkMax rightSpark3 = null;
 
   //encoders
-  private CANEncoder leftEncoder = null;
-  private CANEncoder rightEncoder = null;
+  private static CANEncoder leftEncoder = null;
+  private static CANEncoder rightEncoder = null;
   
   
   //navX
@@ -59,6 +59,7 @@ public class Drivetrain extends SubsystemBase {
   private SpeedControllerGroup leftMotors;
   private SpeedControllerGroup rightMotors;
   private DifferentialDrive drive;
+
 
 
   /** Creates a new Drivetrain. */
@@ -128,11 +129,11 @@ public class Drivetrain extends SubsystemBase {
     return -rightEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 10.38;
   }
 
-  public double leftDriveSpeed() {
+  public static double leftDriveSpeed() {
     return (leftEncoder.getVelocity() / 60) * (0.1524 * Math.PI) * 10.38;
   }
 
-  public double rightDriveSpeed() {
+  public static double rightDriveSpeed() {
     return -(rightEncoder.getVelocity() / 60) * (0.1524 * Math.PI) * 10.38;
   }
 
