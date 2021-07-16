@@ -32,15 +32,15 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_ANGULAR_AXIS = 0;
 
     //characterization
-    public static final double ksVolts = 0.113;//0.0418;
-    public static final double kvVoltSecondsPerMeter = 2.67;//2.87;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.38;//0.175;
-    public static final double kPDriveVel = 1.87*1.5;//1.87
-    public static final double kTrackwidthMeters = 0.552865;
+    public static final double ksVolts = -0.0104;//0.113;//0.0418;
+    public static final double kvVoltSecondsPerMeter = 3.02;//2.67;//2.87;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.229;//0.38;//0.175;
+    public static final double kPDriveVel = 1.96;//1.87*1.5;//1.87
+    public static final double kTrackwidthMeters = 0.559439896;//0.552865;
     //0.025 most likely lower bound
     //0.01 did not work
-    public static final double kMaxSpeedMetersPerSecond = 0.025;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.025;
+    public static final double kMaxSpeedMetersPerSecond = .75;
+    public static final double kMaxAccelerationMetersPerSecondSquared = .75;
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
 

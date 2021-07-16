@@ -101,6 +101,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("gyro angle", Drivetrain.getHeading());
     SmartDashboard.putNumber("Right Wheel Speed", Drivetrain.rightDriveSpeed());
     SmartDashboard.putNumber("Left Wheel Speed", Drivetrain.leftDriveSpeed());
+    SmartDashboard.putNumber("LeftEncoderNative", Drivetrain.getLeftEncoder().getPosition());
+
     //SmartDashboard.putString("funny number", RobotContainer.drivetrain.getPose().toString());
     /*
     SmartDashboard.putNumber("funny number", Drivetrain.getHeading());

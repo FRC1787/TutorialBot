@@ -29,25 +29,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Drivetrain extends SubsystemBase {
   
   //spark motor controllers
-  /*
-  public static CANSparkMax leftSpark1 = null;
-  
-  public static CANSparkMax leftSpark2 = null;
-  public static CANSparkMax leftSpark3 = null;
-  public static CANSparkMax rightSpark1 = null;
-  public static CANSparkMax rightSpark2 = null;
-  public static CANSparkMax rightSpark3 = null;*/
-
-  public static CANSparkMax leftSpark1 = null;
-  public static CANSparkMax leftSpark2 = null;
-  public static CANSparkMax leftSpark3 = null;
-  public static CANSparkMax rightSpark1 = null;
-  public static CANSparkMax rightSpark2 = null;
-  public static CANSparkMax rightSpark3 = null;
+  public static CANSparkMax leftSpark1 = new CANSparkMax(Constants.left1, MotorType.kBrushless);
+  public static CANSparkMax leftSpark2 = new CANSparkMax(Constants.left2, MotorType.kBrushless);
+  public static CANSparkMax leftSpark3 = new CANSparkMax(Constants.left3, MotorType.kBrushless);
+  public static CANSparkMax rightSpark1 = new CANSparkMax(Constants.right1, MotorType.kBrushless);
+  public static CANSparkMax rightSpark2 = new CANSparkMax(Constants.right2, MotorType.kBrushless);
+  public static CANSparkMax rightSpark3 = new CANSparkMax(Constants.right3, MotorType.kBrushless);
 
   //encoders
-  private static CANEncoder leftEncoder = null;
-  private static CANEncoder rightEncoder = null;
+  private static final CANEncoder leftEncoder = leftSpark1.getEncoder(EncoderType.kHallSensor, 42);
+  private static final CANEncoder rightEncoder = rightSpark1.getEncoder(EncoderType.kHallSensor, 42);
   
   
   //navX
@@ -64,16 +55,14 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-    //define sparks
-    leftSpark1 = new CANSparkMax(Constants.left1, MotorType.kBrushless);
-    leftSpark2 = new CANSparkMax(Constants.left2, MotorType.kBrushless);
-    leftSpark3 = new CANSparkMax(Constants.left3, MotorType.kBrushless);
-    rightSpark1 = new CANSparkMax(Constants.right1, MotorType.kBrushless);
-    rightSpark2 = new CANSparkMax(Constants.right2, MotorType.kBrushless);
-    rightSpark3 = new CANSparkMax(Constants.right3, MotorType.kBrushless);
 
-    leftEncoder = leftSpark1.getEncoder(EncoderType.kHallSensor, 42);
-    rightEncoder = rightSpark1.getEncoder(EncoderType.kHallSensor, 42);
+    rightSpark1.setInverted(false);
+    rightSpark2.setInverted(false);
+    rightSpark3.setInverted(false);
+    leftSpark1.setInverted(false);
+    leftSpark2.setInverted(false);
+    leftSpark3.setInverted(false);
+
 
     leftMotors = new SpeedControllerGroup(leftSpark1, leftSpark2, leftSpark3);
     rightMotors = new SpeedControllerGroup(rightSpark1, rightSpark2, rightSpark3);
@@ -85,8 +74,6 @@ public class Drivetrain extends SubsystemBase {
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 
     setMaxOutput(0.3); //maybe go slow ~(=^･･^)_旦~ (ﾟoﾟ;)
-    
-
   }
     
   public Pose2d getPose() {
@@ -105,12 +92,13 @@ public class Drivetrain extends SubsystemBase {
 
   public void arcadeDrive(double linearSpeed, double angularSpeed) {
     drive.arcadeDrive(linearSpeed, angularSpeed);
+    drive.feed();
   }
 
   //does this matter if we are arcade
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     leftMotors.setVoltage(leftVolts);
-    rightMotors.setVoltage(-rightVolts); //originally only this was negative
+    rightMotors.setVoltage(rightVolts); //originally only this was negative
     drive.feed();
   }
 
@@ -122,19 +110,19 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double leftEncoderDistance() {
-    return leftEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 10.38;
+    return (leftEncoder.getPosition() / 10.38) * 0.479;//* (0.1524 * Math.PI) / 42 * 10.38;
   }
 
   public double rightEncoderDistance() {
-    return -rightEncoder.getPosition() * (0.1524 * Math.PI) / 42 * 10.38;
+    return (-rightEncoder.getPosition() / 10.38) * 0.479; //* (0.1524 * Math.PI) / 42 * 10.38;
   }
 
   public static double leftDriveSpeed() {
-    return (leftEncoder.getVelocity() / 60) * (0.1524 * Math.PI) * 10.38;
+    return ((leftEncoder.getVelocity() / 60)  / 10.38) * 0.479; //* (0.1524 * Math.PI) * 10.38;
   }
 
   public static double rightDriveSpeed() {
-    return -(rightEncoder.getVelocity() / 60) * (0.1524 * Math.PI) * 10.38;
+    return ((-rightEncoder.getVelocity() / 60)  / 10.38) * 0.479; //* (0.1524 * Math.PI) * 10.38;
   }
 
   public double getAverageEncoderDistance() {
@@ -142,11 +130,11 @@ public class Drivetrain extends SubsystemBase {
     return (leftEncoderDistance() + rightEncoderDistance()) / 2.0;
   }
 
-  public CANEncoder getLeftEncoder() {
+  public static CANEncoder getLeftEncoder() {
     return leftEncoder;
   }
 
-  public CANEncoder getRightEncoder() {
+  public static CANEncoder getRightEncoder() {
     return rightEncoder;
   }
 
@@ -166,13 +154,13 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getTurnRate() {
-    return gyro.getRate(); //used to be negative
+    return -gyro.getRate(); //used to be negative
   }
 
   @Override
   public void periodic() {
     //odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getDistance());
-    odometry.update(gyro.getRotation2d(), leftDriveSpeed(), rightDriveSpeed());
+    odometry.update(gyro.getRotation2d(), leftEncoderDistance(), rightEncoderDistance());
   }
 
 }
