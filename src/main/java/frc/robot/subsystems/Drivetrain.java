@@ -178,6 +178,10 @@ public class Drivetrain extends SubsystemBase {
     integral += previousError;
     previousError = error;
 
+    return Math.abs(error) > okErrorRange ? // returns PID motor percentage
+      truncate((Constants.PROPORTIONAL_TWEAK * proportional) + (Constants.DERIVATIVE_TWEAK * derivative) + (Constants.INTEGRAL_TWEAK * integral), Constants.maximumMotorOutput)
+      : 0.0;
+    /*
     if (Math.abs(error) > okErrorRange) // && !(targetDistance < actualValue && seekType == "oneWay")
     {
       pIDMotorVoltage = truncate((Constants.PROPORTIONAL_TWEAK * proportional)
@@ -186,13 +190,12 @@ public class Drivetrain extends SubsystemBase {
       return pIDMotorVoltage;
     }
 
-    return 0.0; 
+    return 0.0; */
 
   }
 
   private double truncate(double n, double maximum) { // return n if it's in range, if it's magnitude is large return maximum
-    if (Math.abs(n) > maximum) return maximum*Math.signum(n);
-    return n;
+    return Math.abs(n) > maximum ? maximum*Math.signum(n) : n;
   }
 
   public void angleTurn(double setAngle) { // Gyro should be reset before method is used unless you're doing something weird
@@ -207,18 +210,6 @@ public class Drivetrain extends SubsystemBase {
   public void visionFollow(double distance) {
     tankDriveVolts(PIDDrive2(distance, Vision.distanceToTarget()), PIDDrive2(distance, Vision.distanceToTarget()));
   }
-
-  //public static void 
-
-  // returns 0 if input is below zero and returns the input if it is above 0
-  public static double noNegative(final double input)
-    {
-      if (input >= 0) 
-      return input;
-      
-      else 
-      return 0;
-    }
 
   @Override
   public void periodic() {
