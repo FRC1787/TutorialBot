@@ -30,6 +30,9 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER = 0;
     public static final int DRIVER_CONTROLLER_LINEAR_AXIS = 1;
     public static final int DRIVER_CONTROLLER_ANGULAR_AXIS = 0;
+    
+    public static final int drivetrainOverrideButton = 12; // buttosn
+    public static final int visionTurnButton = 3;
 
     //characterization
     public static final double ksVolts = 0.0418;
@@ -47,6 +50,13 @@ public final class Constants {
 	public static final int[] kRightEncoderPorts = new int[] {2, 3};
 	public static final double kEncoderDistancePerPulse = (0.1524 * Math.PI) / 42 * 10.38; //most definitely not 4096 or 1024
 	public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+    
+    //PID VALUES
+	public static final double PROPORTIONAL_TWEAK = 0.007; // 0.0065 0.0047
+	public static final double INTEGRAL_TWEAK = 0.0001;
+    public static final double DERIVATIVE_TWEAK = 0.0005;
+    public static final double maximumMotorOutput = 0.2;
+    
     
     /*
     //navX

@@ -43,6 +43,13 @@ public class Drivetrain extends SubsystemBase {
   public static SpeedController rightSpark1 = new CANSparkMax(Constants.right1, MotorType.kBrushless);
   public static SpeedController rightSpark2 = new CANSparkMax(Constants.right2, MotorType.kBrushless);
   public static SpeedController rightSpark3 = new CANSparkMax(Constants.right3, MotorType.kBrushless);
+  private static double error;
+  private static double derivative;
+  private static double proportional;
+  private static double integral;
+  private static double previousError;
+  private static double okErrorRange = 0.0;
+  private static double pIDMotorVoltage;
 
   //encoders
   private CANEncoder leftEncoder = null;
@@ -50,7 +57,7 @@ public class Drivetrain extends SubsystemBase {
   
   
   //navX
-  public AHRS gyro = new AHRS();;
+  public AHRS gyro = new AHRS();
   //public DifferentialDriveKinematics kDriveKinematics;// = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
   public DifferentialDriveOdometry odometry;// = new DifferentialDriveOdometry(gyro.getRotation2d());
 
@@ -148,10 +155,6 @@ public class Drivetrain extends SubsystemBase {
     drive.setMaxOutput(maxOutput);
   }
 
-  public void zeroHeading() {
-    gyro.reset();
-  }
-
   public double getHeading() {
     return gyro.getRotation2d().getDegrees();
 
@@ -159,9 +162,63 @@ public class Drivetrain extends SubsystemBase {
     //return Rotation2d.fromDegrees(-gyro.getAngle());
   }
 
+  public void zeroHeading() {
+    gyro.reset();
+  }
+
   public double getTurnRate() {
     return -gyro.getRate();
   }
+
+  public double PIDDrive2(double targetDistance, double actualValue) {
+    
+    error = targetDistance - actualValue;
+    proportional = error; // Math for determining motor output based on PID values
+    derivative = (previousError - error) / 0.02;
+    integral += previousError;
+    previousError = error;
+
+    if (Math.abs(error) > okErrorRange) // && !(targetDistance < actualValue && seekType == "oneWay")
+    {
+      pIDMotorVoltage = truncate((Constants.PROPORTIONAL_TWEAK * proportional)
+          + (Constants.DERIVATIVE_TWEAK * derivative) + (Constants.INTEGRAL_TWEAK * integral), Constants.maximumMotorOutput);
+
+      return pIDMotorVoltage;
+    }
+
+    return 0.0; 
+
+  }
+
+  private double truncate(double n, double maximum) { // return n if it's in range, if it's magnitude is large return maximum
+    if (Math.abs(n) > maximum) return maximum*Math.signum(n);
+    return n;
+  }
+
+  public void angleTurn(double setAngle) { // Gyro should be reset before method is used unless you're doing something weird
+    tankDriveVolts(-PIDDrive2(setAngle, gyro.getYaw()), PIDDrive2(setAngle, gyro.getYaw()));
+  }
+
+  public void visionTurn() {
+    gyro.reset();
+    tankDriveVolts(-PIDDrive2(Vision.lX, gyro.getYaw()), PIDDrive2(Vision.lX, gyro.getYaw()));
+  }
+
+  public void visionFollow(double distance) {
+    tankDriveVolts(PIDDrive2(distance, Vision.distanceToTarget()), PIDDrive2(distance, Vision.distanceToTarget()));
+  }
+
+  //public static void 
+
+  // returns 0 if input is below zero and returns the input if it is above 0
+  public static double noNegative(final double input)
+    {
+      if (input >= 0) 
+      return input;
+      
+      else 
+      return 0;
+    }
 
   @Override
   public void periodic() {

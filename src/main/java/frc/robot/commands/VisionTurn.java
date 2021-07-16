@@ -5,41 +5,41 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
-public class DriveArcade extends CommandBase {
-  /** Creates a new DriveArcade. */
-  public DriveArcade() {
-    // Use addRequirements() here to declare subsystem dependencies.
+public class VisionTurn extends CommandBase {
+  /** Creates a new VisionTurn. */
+  public VisionTurn() {
+
     addRequirements(RobotContainer.drivetrain);
+    addRequirements(RobotContainer.vision);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    RobotContainer.drivetrain.zeroHeading();
+    RobotContainer.drivetrain.resetEncoders();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    double linearSpeed = RobotContainer.joystick.getRawAxis(Constants.DRIVER_CONTROLLER_LINEAR_AXIS);
-    double angularSpeed = -RobotContainer.joystick.getRawAxis(Constants.DRIVER_CONTROLLER_ANGULAR_AXIS);
-    RobotContainer.drivetrain.arcadeDrive(linearSpeed, angularSpeed);
-
-
+    //  no reset bc visionturn function already has it
+    RobotContainer.drivetrain.visionTurn();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.drivetrain.arcadeDrive(0, 0);
+    RobotContainer.drivetrain.tankDriveVolts(0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return RobotContainer.joystick.getRawButton(Constants.drivetrainOverrideButton);
   }
 }

@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -21,9 +23,9 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.commands.AutonomousCommand;
 import frc.robot.commands.DriveArcade;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.VisionTurn;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -37,21 +39,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public static Drivetrain drivetrain;
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  public static Drivetrain drivetrain = new Drivetrain();
+  public static Vision vision = new Vision();
 
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Command m_autoCommand = new AutonomousCommand(drivetrain);
 
-  public static Joystick driverController = new Joystick(Constants.DRIVER_CONTROLLER);
+  public static Joystick joystick = new Joystick(Constants.DRIVER_CONTROLLER);
+  public Button visionTurn = new JoystickButton(joystick, Constants.visionTurnButton);
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     // Configure the button bindings
     configureButtonBindings();
-
-    drivetrain = new Drivetrain();
 
     drivetrain.setDefaultCommand(new DriveArcade());
   }
@@ -62,7 +63,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    visionTurn.whenPressed(new VisionTurn());
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
