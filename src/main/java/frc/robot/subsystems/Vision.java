@@ -97,11 +97,11 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-   tx = table.getEntry("tx");
-   lX = tx.getDouble(0.0);
-   ty = table.getEntry("ty");
-   lY = ty.getDouble(0.0);
-   ta = table.getEntry("ta");
-   lArea = ta.getDouble(0.0);
+   Vision.tx = table.getEntry("tx");
+   Vision.lX = tx.getDouble(0.0);
+   Vision.ty = table.getEntry("ty");
+   Vision.lY = ty.getDouble(0.0);
+   Vision.ta = table.getEntry("ta");
+   Vision.lArea = ta.getDouble(0.0);
   }
 }

@@ -69,6 +69,13 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
+
+    leftSpark1.setInverted(false);
+    leftSpark2.setInverted(false);
+    leftSpark3.setInverted(false);
+    rightSpark1.setInverted(false);
+    rightSpark2.setInverted(false);
+    rightSpark3.setInverted(false);
     
     leftEncoder = ((CANSparkMax) leftSpark1).getEncoder();
     //private final Encoder rightEncoder = new Encoder(Constants.kRightEncoderPorts[0], Constants.kRightEncoderPorts[1]);
@@ -110,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
     //does this matter if we are arcade
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     leftMotors.setVoltage(leftVolts);
-    rightMotors.setVoltage(-rightVolts);
+    rightMotors.setVoltage(rightVolts);
     drive.feed();
   }
 
@@ -204,6 +211,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void visionTurn() {
     gyro.reset();
+    System.out.println(Vision.lX);
     tankDriveVolts(-PIDDrive2(Vision.lX, gyro.getYaw()), PIDDrive2(Vision.lX, gyro.getYaw()));
   }
 

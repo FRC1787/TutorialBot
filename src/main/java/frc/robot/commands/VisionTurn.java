@@ -22,6 +22,7 @@ public class VisionTurn extends CommandBase {
   public void initialize() {
     RobotContainer.drivetrain.zeroHeading();
     RobotContainer.drivetrain.resetEncoders();
+    System.out.println("hi there hello hi");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -29,6 +30,7 @@ public class VisionTurn extends CommandBase {
   public void execute() {
     //  no reset bc visionturn function already has it
     RobotContainer.drivetrain.visionTurn();
+    System.out.println("execute");
   }
 
   // Called once the command ends or is interrupted.
