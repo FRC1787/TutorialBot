@@ -42,9 +42,9 @@ public class Drivetrain extends SubsystemBase {
   
   
   //navX
-  public static AHRS gyro;
+  public static AHRS gyro = new AHRS();
   //public DifferentialDriveKinematics kDriveKinematics;// = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
-  public static DifferentialDriveOdometry odometry;// = new DifferentialDriveOdometry(gyro.getRotation2d());
+  public final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d());// = new DifferentialDriveOdometry(gyro.getRotation2d());
 
   //motor groups + drive
   private SpeedControllerGroup leftMotors;
@@ -59,9 +59,9 @@ public class Drivetrain extends SubsystemBase {
     rightSpark1.setInverted(false);
     rightSpark2.setInverted(false);
     rightSpark3.setInverted(false);
-    leftSpark1.setInverted(false);
-    leftSpark2.setInverted(false);
-    leftSpark3.setInverted(false);
+    leftSpark1.setInverted(true);
+    leftSpark2.setInverted(true);
+    leftSpark3.setInverted(true);
 
 
     leftMotors = new SpeedControllerGroup(leftSpark1, leftSpark2, leftSpark3);
@@ -70,10 +70,15 @@ public class Drivetrain extends SubsystemBase {
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
     //kDriveKinematics = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
-    gyro = new AHRS();
-    odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
+    
 
     setMaxOutput(0.3); //maybe go slow ~(=^･･^)_旦~ (ﾟoﾟ;)
+  }
+
+  @Override
+  public void periodic() {
+    //odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getDistance());
+    odometry.update(gyro.getRotation2d(), leftEncoderDistance(), rightEncoderDistance());
   }
     
   public Pose2d getPose() {
@@ -81,7 +86,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    //return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getRate());
     return new DifferentialDriveWheelSpeeds(leftDriveSpeed(), rightDriveSpeed());
   }
 
@@ -110,19 +114,21 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double leftEncoderDistance() {
-    return (leftEncoder.getPosition() / 10.38) * 0.479;//* (0.1524 * Math.PI) / 42 * 10.38;
+    return (leftEncoder.getPosition() / 10.38) * 0.479;
   }
 
   public double rightEncoderDistance() {
-    return (-rightEncoder.getPosition() / 10.38) * 0.479; //* (0.1524 * Math.PI) / 42 * 10.38;
+    return (-rightEncoder.getPosition() / 10.38) * 0.479;
   }
 
   public static double leftDriveSpeed() {
-    return ((leftEncoder.getVelocity() / 60)  / 10.38) * 0.479; //* (0.1524 * Math.PI) * 10.38;
+    return (leftEncoder.getVelocity() / 60) / 10.38 * (2*Math.PI) * 0.0762;
+    //return ((leftEncoder.getVelocity() / 60)  / 10.38) * 0.479;
   }
 
   public static double rightDriveSpeed() {
-    return ((-rightEncoder.getVelocity() / 60)  / 10.38) * 0.479; //* (0.1524 * Math.PI) * 10.38;
+    return (rightEncoder.getVelocity() / 60) / 10.38 * (2*Math.PI) * 0.0762;
+    //return ((rightEncoder.getVelocity() / 60)  / 10.38) * 0.479;
   }
 
   public double getAverageEncoderDistance() {
@@ -157,10 +163,5 @@ public class Drivetrain extends SubsystemBase {
     return -gyro.getRate(); //used to be negative
   }
 
-  @Override
-  public void periodic() {
-    //odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getDistance());
-    odometry.update(gyro.getRotation2d(), leftEncoderDistance(), rightEncoderDistance());
-  }
 
 }

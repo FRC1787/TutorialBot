@@ -39,8 +39,8 @@ public final class Constants {
     public static final double kTrackwidthMeters = 0.559439896;//0.552865;
     //0.025 most likely lower bound
     //0.01 did not work
-    public static final double kMaxSpeedMetersPerSecond = .75;
-    public static final double kMaxAccelerationMetersPerSecondSquared = .75;
+    public static final double kMaxSpeedMetersPerSecond = .3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = .4;
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
 
