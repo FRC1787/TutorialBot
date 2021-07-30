@@ -31,8 +31,9 @@ public class DriveArcade extends CommandBase {
   public void execute() {
     
     double linearSpeed = -RobotContainer.driverController.getRawAxis(Constants.DRIVER_CONTROLLER_LINEAR_AXIS);
-    double angularSpeed = RobotContainer.driverController.getRawAxis(Constants.DRIVER_CONTROLLER_ANGULAR_AXIS);
-    localDriveTrain.arcadeDrive(linearSpeed, angularSpeed);
+    double angularSpeed = -RobotContainer.driverController.getRawAxis(Constants.DRIVER_CONTROLLER_ANGULAR_AXIS);
+    //localDriveTrain.arcadeDrive(linearSpeed, angularSpeed);
+    localDriveTrain.tankDriveStandard(linearSpeed - angularSpeed, linearSpeed + angularSpeed);
 
 
   }

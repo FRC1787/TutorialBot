@@ -47,9 +47,9 @@ public class Drivetrain extends SubsystemBase {
   public final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d());// = new DifferentialDriveOdometry(gyro.getRotation2d());
 
   //motor groups + drive
-  private SpeedControllerGroup leftMotors;
-  private SpeedControllerGroup rightMotors;
-  private DifferentialDrive drive;
+  private SpeedControllerGroup leftMotors = new SpeedControllerGroup(leftSpark1, leftSpark2, leftSpark3);
+  private SpeedControllerGroup rightMotors = new SpeedControllerGroup(rightSpark1, rightSpark2, rightSpark3);
+  private final DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
 
 
 
@@ -64,10 +64,9 @@ public class Drivetrain extends SubsystemBase {
     leftSpark3.setInverted(true);
 
 
-    leftMotors = new SpeedControllerGroup(leftSpark1, leftSpark2, leftSpark3);
-    rightMotors = new SpeedControllerGroup(rightSpark1, rightSpark2, rightSpark3);
+
     resetEncoders(); //originally at the end of this method
-    drive = new DifferentialDrive(leftMotors, rightMotors);
+    
 
     //kDriveKinematics = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
     
@@ -91,6 +90,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
+    gyro.reset();
     odometry.resetPosition(pose, gyro.getRotation2d());
   }
 
@@ -106,6 +106,11 @@ public class Drivetrain extends SubsystemBase {
     drive.feed();
   }
 
+  public void tankDriveStandard(double left, double right) {
+    leftMotors.set(left);
+    rightMotors.set(right);
+  }
+
   public void resetEncoders() {
     //leftEncoder.reset();
     leftEncoder.setPosition(0);
@@ -113,12 +118,12 @@ public class Drivetrain extends SubsystemBase {
     rightEncoder.setPosition(0);
   }
 
-  public double leftEncoderDistance() {
-    return (leftEncoder.getPosition() / 10.38) * 0.479;
+  public static double leftEncoderDistance() {
+    return (leftEncoder.getPosition() / 10.38) * 0.479 * 1.29651;
   }
 
-  public double rightEncoderDistance() {
-    return (-rightEncoder.getPosition() / 10.38) * 0.479;
+  public static double rightEncoderDistance() {
+    return (rightEncoder.getPosition() / 10.38) * 0.479 * 1.29651;
   }
 
   public static double leftDriveSpeed() {
