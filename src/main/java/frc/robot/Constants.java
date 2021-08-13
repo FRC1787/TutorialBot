@@ -30,9 +30,10 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER = 0;
     public static final int DRIVER_CONTROLLER_LINEAR_AXIS = 1;
     public static final int DRIVER_CONTROLLER_ANGULAR_AXIS = 0;
-    
+    //buttosn
     public static final int drivetrainOverrideButton = 12; // buttosn
     public static final int visionTurnButton = 3;
+	public static final int visionFollowButton = 4;
 
     //characterization
     public static final double ksVolts = 0.0418;
@@ -52,12 +53,14 @@ public final class Constants {
 	public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     
     //PID VALUES
-	public static final double PROPORTIONAL_TWEAK = 0.007; // 0.0065 0.0047
-	public static final double INTEGRAL_TWEAK = 0.0001;
-    public static final double DERIVATIVE_TWEAK = 0.0005;
-    public static final double maximumMotorOutput = 0.2;
+	public static final double PROPORTIONAL_TWEAK = .55; //0.3 < x < .7;
+	public static final double INTEGRAL_TWEAK = 0.00004; //0.0001;
+    public static final double DERIVATIVE_TWEAK = -0.005; //0.0005;
+    public static final double maximumMotorOutput = 0.7;
+    public static final double okErrorRange = 0.00;
     
-    
+    //LIMELIGHT
+    public static final double targetHeight = 70;//66; //7.4375*12 
     /*
     //navX
     public static final double ENCODER_RPM_TO_MPS = Math.PI * 2 * Units.inchesToMeters(3.0) / 60 / 7.56; // probably the real gear ratio

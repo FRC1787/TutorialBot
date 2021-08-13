@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.commands.AutonomousCommand;
 import frc.robot.commands.DriveArcade;
+import frc.robot.commands.VisionFollow;
 import frc.robot.commands.VisionTurn;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
@@ -46,6 +47,7 @@ public class RobotContainer {
 
   public static Joystick joystick = new Joystick(Constants.DRIVER_CONTROLLER);
   public Button visionTurn = new JoystickButton(joystick, Constants.visionTurnButton);
+  public Button visionFollow = new JoystickButton(joystick, Constants.visionFollowButton);
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -64,6 +66,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     visionTurn.whenPressed(new VisionTurn());
+    visionFollow.whenPressed(new VisionFollow());
   }
 
   /**

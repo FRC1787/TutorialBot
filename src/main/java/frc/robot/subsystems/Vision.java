@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -84,7 +85,7 @@ public class Vision extends SubsystemBase {
   }
 
   public static double distanceToTarget() {
-    return (7.4375*12 - 21.5)/(Math.tan(Math.toRadians(Vision.lY + 18))) - 24.5;
+    return (Constants.targetHeight - 21.5)/(Math.tan(Math.toRadians(Vision.lY + 18))) - 24.5;
   }
 
   public static void ledSet(double ledState) {

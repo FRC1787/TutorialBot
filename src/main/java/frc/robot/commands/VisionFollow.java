@@ -8,13 +8,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
-public class VisionTurn extends CommandBase {
-  /** Creates a new VisionTurn. */
-  public VisionTurn() {
-
+public class VisionFollow extends CommandBase {
+  /** Creates a new VisionFollow. */
+  public VisionFollow() {
     addRequirements(RobotContainer.drivetrain);
     addRequirements(RobotContainer.vision);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -27,14 +25,13 @@ public class VisionTurn extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //  no reset bc visionturn function already has it
-    RobotContainer.drivetrain.visionTurn();
+    RobotContainer.drivetrain.visionFollow(48);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.drivetrain.tankDriveVolts(0, 0);
+    RobotContainer.drivetrain.tankDriveVolts(0.0, 0.0);
   }
 
   // Returns true when the command should end.
