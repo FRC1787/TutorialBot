@@ -119,7 +119,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public static double leftEncoderDistance() {
-    return (leftEncoder.getPosition() / 10.38) * 0.479 * 1.29651;
+    return (leftEncoder.getPosition() / 10.38) * 0.479 * 1.29651; // converts encoder value to meters robot has driven
   }
 
   public static double rightEncoderDistance() {
